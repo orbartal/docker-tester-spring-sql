@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+
+    demospringsqlbackend:
+        image: orbartal/spring-demo-sql:latest
+        hostname: demospringsql
+        container_name: demospringsqlbackend
+        ports:
+            - 8080:8080
+        networks:
+            - spring-docker
+
+    demospringsqltester:
+        image: orbartal/spring-demo-sql-tester:latest
+        hostname: demospringsqltester
+        container_name: demospringsqltester
+        depends_on:
+            - demospringsqlbackend
+        ports:
+            - 8090:8090
+        networks:
+            - spring-docker
+        environment:
+            - demo.backend.url=http://demospringsqlbackend:8080
+networks:
+    spring-docker:
