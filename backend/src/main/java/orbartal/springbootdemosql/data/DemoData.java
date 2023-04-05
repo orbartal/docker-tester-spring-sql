@@ -1,65 +1,85 @@
 package orbartal.springbootdemosql.data;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import orbartal.springbootdemosql.model.DemoDto;
+import orbartal.springbootdemosql.sql.DemoEntity;
+import orbartal.springbootdemosql.sql.DemoRepository;
 
+@Transactional
 @Component
 public class DemoData {
 
-	private Map<String, DemoDto> demo = new HashMap<>();
+	@Autowired
+	private DemoRepository demoRepository;
 
+	static final Comparator<DemoDto> keyComparator = (a, b) -> a.getKey().compareTo(b.getKey());
+
+	@Transactional(readOnly = true)
 	public synchronized List<DemoDto> readAll() {
-		return demo.values().stream().sorted((a,b)->a.getKey().compareTo(b.getKey())).toList();
+		List<DemoEntity> entities = demoRepository.findAll();
+		return entities.stream().map(e -> buildDemoDto(e)).sorted(keyComparator).toList();
 	}
 
+	@Transactional(readOnly = true)
 	public synchronized DemoDto readByKey(String key) {
-		return demo.get(key);
+		DemoEntity entitiy = demoRepository.findByKey(key);
+		return (entitiy != null) ? buildDemoDto(entitiy) : null;
 	}
 
+	@Transactional(readOnly = false)
 	public synchronized DemoDto create(DemoDto input) {
 		String key = input.getKey();
-		DemoDto dto = demo.get(key);
-		if (dto != null) {
-			throw new RuntimeException("Duplicate key:" + key);
+		String value = input.getValue();
+		DemoEntity oldEntitiy = demoRepository.findByKey(key);
+		if (oldEntitiy != null) {
+			throw new RuntimeException("Duplicate key: " + key);
 		}
-		DemoDto entity = buildDemoDto(key, input.getValue());
-		demo.put(input.getKey(), entity);
-		return entity;
+		DemoEntity newEntitiy = new DemoEntity();
+		newEntitiy.setKey(key);
+		newEntitiy.setValue(value);
+		demoRepository.save(newEntitiy);
+		return buildDemoDto(newEntitiy);
 	}
 
+	@Transactional(readOnly = false)
 	public synchronized DemoDto update(DemoDto input) {
 		String key = input.getKey();
-		DemoDto entity = demo.get(key);
-		if (entity == null) {
+		String value = input.getValue();
+		DemoEntity entitiy = demoRepository.findByKey(key);
+		if (entitiy == null) {
 			throw new RuntimeException("Missing key: " + key);
 		}
-		entity.setValue(input.getValue());
-		return entity;
+		entitiy.setValue(value);
+		demoRepository.save(entitiy);
+		return buildDemoDto(entitiy);
 	}
 
-	private DemoDto buildDemoDto(String key, String value) {
-		DemoDto entity = new DemoDto();
-		entity.setId(System.currentTimeMillis()); // Mock DB generate id
-		entity.setKey(key);
-		entity.setValue(value);
-		return entity;
+	private DemoDto buildDemoDto(DemoEntity e) {
+		DemoDto dto = new DemoDto();
+		dto.setId(e.getId());
+		dto.setKey(e.getKey());
+		dto.setValue(e.getValue());
+		return dto;
 	}
 
+	@Transactional(readOnly = false)
 	public synchronized void deleteByKey(String key) {
-		DemoDto entity = demo.get(key);
+		DemoEntity entity = demoRepository.findByKey(key);
 		if (entity == null) {
 			throw new RuntimeException("Missing key: " + key);
 		}
-		demo.remove(key);
+		demoRepository.delete(entity);
 	}
 
+	@Transactional(readOnly = false)
 	public synchronized void deleteAll() {
-		demo.clear();
+		demoRepository.deleteAll();
 	}
 
 }
