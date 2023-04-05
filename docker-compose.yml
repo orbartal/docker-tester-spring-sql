@@ -1,12 +1,47 @@
 version: '3.8'
 services:
 
+    #postgres: Third party open source sql db
+    postgres:
+        container_name: postgres
+        hostname: postgres
+        image: postgres:12.3
+        ports:
+          - "5432:5432"
+        environment:
+          - POSTGRES_USER=demo_user
+          - POSTGRES_PASSWORD=demo_pass
+          - POSTGRES_DB=demo_db
+        volumes:
+            - ./data/sql_script:/docker-entrypoint-initdb.d
+
+    #pgadmin4: Third party open source web gui for sql db
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin4
+        depends_on:
+            - postgres
+        ports:
+            - "5050:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: demo@gmail.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+      
     demospringsqlbackend:
         image: orbartal/spring-demo-sql:latest
         hostname: demospringsql
         container_name: demospringsqlbackend
+        depends_on:
+            - postgres
         ports:
             - 8080:8080
+        environment:
+        #SQL
+            - SQL_DB_TYPE=postgres
+            - SQL_DB_URL=jdbc:postgresql://postgres:5432/demo_db
+            - SQL_DB_USER=demo_user
+            - SQL_DB_PASSWORD=demo_pass
+            - SQL_DB_SHOWSQL=false
         networks:
             - spring-docker
 
@@ -21,6 +56,7 @@ services:
         networks:
             - spring-docker
         environment:
-            - demo.backend.url=http://demospringsqlbackend:8080
+            - demo.backend.url=http://demospringsqlbackend:8080        
 networks:
     spring-docker:
+   
