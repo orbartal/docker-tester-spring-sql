@@ -51,3 +51,26 @@ docker compose up
 
 Open url in browser and use the [demo-backend-ui](http://localhost:8080/swagger-ui/index.html)
 Open url in browser and use the [demo-tester-ui](http://localhost:8090/swagger-ui/index.html)
+
+#### Instructions on how to login into pgAdmin and manage postgresql tables
+All the below details are define, and can be modify, in the ./ docker-compose.yml file.
+
+1 Open url in browser and use the [pgAdmin-ui](http://localhost:5050)
+
+2 Login into pgAdmin-ui (http://localhost:5050) using user and password:
+- user: demo@gmail.com
+- password: admin
+- Use the default language English
+
+3 Create new server and connect to it using the docker postgresql details:
+- hostname: postgres
+- port: 5432
+- user: demo_user
+- password: demo_pass
+
+4 In the side menu select the dmo table:
+- servers->demo->Databases->demo_db->Schemas->public->Tables->demo_table
+
+5 Run a select query on the table: demo_table
+- script->select script
+- SELECT demo_id, demo_key, demo_value FROM public.demo_table;
