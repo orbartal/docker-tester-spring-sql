@@ -15,7 +15,7 @@ services:
         volumes:
             - ./data/sql_script:/docker-entrypoint-initdb.d
         networks:
-            - spring-docker   
+            - docker-tester-spring-sql   
 
     #pgadmin4: Third party open source web gui for sql db
     pgadmin:
@@ -29,7 +29,7 @@ services:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_USER_PASSWORD}
         networks:
-            - spring-docker      
+            - docker-tester-spring-sql      
       
     demospringsqlbackend:
         image: orbartal/spring-demo-sql:latest
@@ -48,7 +48,7 @@ services:
             - SQL_DB_PASSWORD=${SQL_USER_PASSWORD}
             - SQL_DB_SHOWSQL=false
         networks:
-            - spring-docker
+            - docker-tester-spring-sql
 
     demospringsqltester:
         image: orbartal/spring-demo-sql-tester:latest
@@ -59,9 +59,9 @@ services:
         ports:
             - ${DEMO_TESTER_PORT}:8090
         networks:
-            - spring-docker
+            - docker-tester-spring-sql
         environment:
             - demo.backend.url=http://demospringsqlbackend:${DEMO_BACKEND_PORT}       
 networks:
-    spring-docker:
+    docker-tester-spring-sql:
    
