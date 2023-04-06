@@ -59,8 +59,8 @@ mvn clean install
 docker build -t orbartal/spring-demo-sql-tester .
 
 3 In the terminal (or cmd) cd into dir "..\docker-tester-spring-sql" and run 2 commands:
-docker compose up
-
+ docker compose  --env-file .env up
+ 
 Open url in browser and use the [demo-backend-ui](http://localhost:8080/swagger-ui/index.html)
 Open url in browser and use the [demo-tester-ui](http://localhost:8090/swagger-ui/index.html)
 
@@ -86,3 +86,10 @@ All the below details are define, and can be modify, in the ./ docker-compose.ym
 5 Run a select query on the table: demo_table
 - script->select script
 - SELECT demo_id, demo_key, demo_value FROM public.demo_table;
+
+### All urls
+
+Remember that the ports number depend on the .env values use by docker-compose
+- [demo-backend-ui](http://localhost:8080/swagger-ui/index.html)
+- [demo-tester-ui](http://localhost:8090/swagger-ui/index.html)
+- [pgAdmin-ui](http://localhost:5050)
