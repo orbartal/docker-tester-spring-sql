@@ -14,6 +14,8 @@ services:
           - POSTGRES_DB=demo_db
         volumes:
             - ./data/sql_script:/docker-entrypoint-initdb.d
+        networks:
+            - spring-docker   
 
     #pgadmin4: Third party open source web gui for sql db
     pgadmin:
@@ -26,6 +28,8 @@ services:
         environment:
             PGADMIN_DEFAULT_EMAIL: demo@gmail.com
             PGADMIN_DEFAULT_PASSWORD: admin
+        networks:
+            - spring-docker      
       
     demospringsqlbackend:
         image: orbartal/spring-demo-sql:latest
@@ -37,6 +41,7 @@ services:
             - 8080:8080
         environment:
         #SQL
+            - SPRING_PROFILES_ACTIVE=comp
             - SQL_DB_TYPE=postgres
             - SQL_DB_URL=jdbc:postgresql://postgres:5432/demo_db
             - SQL_DB_USER=demo_user
