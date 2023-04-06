@@ -9,9 +9,9 @@ services:
         ports:
           - "5432:5432"
         environment:
-          - POSTGRES_USER=demo_user
-          - POSTGRES_PASSWORD=demo_pass
-          - POSTGRES_DB=demo_db
+          - POSTGRES_USER=${SQL_USER_NAME}
+          - POSTGRES_PASSWORD=${SQL_USER_PASSWORD}
+          - POSTGRES_DB=${SQL_DEMO_DB}
         volumes:
             - ./data/sql_script:/docker-entrypoint-initdb.d
         networks:
@@ -26,8 +26,8 @@ services:
         ports:
             - "5050:80"
         environment:
-            PGADMIN_DEFAULT_EMAIL: demo@gmail.com
-            PGADMIN_DEFAULT_PASSWORD: admin
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_USER_EMAIL}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_USER_PASSWORD}
         networks:
             - spring-docker      
       
@@ -43,9 +43,9 @@ services:
         #SQL
             - SPRING_PROFILES_ACTIVE=comp
             - SQL_DB_TYPE=postgres
-            - SQL_DB_URL=jdbc:postgresql://postgres:5432/demo_db
-            - SQL_DB_USER=demo_user
-            - SQL_DB_PASSWORD=demo_pass
+            - SQL_DB_URL=jdbc:postgresql://postgres:5432/${SQL_DEMO_DB}
+            - SQL_DB_USER=${SQL_USER_NAME}
+            - SQL_DB_PASSWORD=${SQL_USER_PASSWORD}
             - SQL_DB_SHOWSQL=false
         networks:
             - spring-docker
