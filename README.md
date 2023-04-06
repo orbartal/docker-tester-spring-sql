@@ -4,6 +4,18 @@
 
 A simple example of compose and 3 dockers: springboot server, sql db and an e2e tester.
 
+### Use cases and spring profiles
+There are currently 3 spring profiles that define the sql db that the backend server will use:
+1. test: use in memeory h2 db. No changes are needed in the config. Good for auto testing.
+2. dev: use a local postgresql server. Fill in details for local DB in application-dev.properties. Good for manual testing locally.
+3. comp: use a remote/docker postgresql server. Fill in detail in the compose file. Good for e2e testing with docker compose.
+
+There are currently 3 mods to testing the backend:
+1. Running integration test without running the real backend server. Using spring profile test.
+2. Running the backend server as local app togther with a local sql db. Using spring profile dev.
+3. Running the backend server as a docker directly. With h2 (test) or external DB (dev).
+4. Running the backend server as a docker using compose. It uses the compose postgresql docker.
+
 ### Instructions on how to build/run the backend locally 
 
 How to build, test, run and use the project server
