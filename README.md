@@ -5,6 +5,7 @@
 A simple example of compose and 3 dockers: springboot server, sql db and an e2e tester.
 
 ### Use cases and spring profiles
+
 There are currently 3 spring profiles that define the sql db that the backend server will use:
 1. test: use in memeory h2 db. No changes are needed in the config. Good for auto testing.
 2. dev: use a local postgresql server. Fill in details for local DB in application-dev.properties. Good for manual testing locally.
@@ -65,6 +66,7 @@ Open url in browser and use the [demo-backend-ui](http://localhost:8080/swagger-
 Open url in browser and use the [demo-tester-ui](http://localhost:8090/swagger-ui/index.html)
 
 #### Instructions on how to login into pgAdmin and manage postgresql tables
+
 All the below details are define, and can be modify, in the ./ docker-compose.yml file.
 
 1 Open url in browser and use the [pgAdmin-ui](http://localhost:5050)
